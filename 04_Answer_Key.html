@@ -1182,6 +1182,12 @@
             document.getElementById('user-email').textContent = email;
         }
 
+        // Shared function to normalize answers by removing trailing periods and trimming whitespace
+        function normalizeAnswer(answer) {
+            if (!answer) return '';
+            return answer.trim().replace(/\.$/, '');
+        }
+
         // Function to calculate and display score statistics
         function calculateScore() {
             let correctCount = 0;
@@ -1240,8 +1246,11 @@
                         'q10-p4': 'they are more alert'
                     };
                     
-                    const isCorrect = userAnswer.trim() === correctAnswers[`q${i}-p4`];
-                    console.log(`Q${i+9}: User="${userAnswer}" | Correct="${correctAnswers[`q${i}-p4`]}" | Match=${isCorrect}`);
+                    // Normalize both answers by removing trailing periods and trimming whitespace
+                    const normalizedUserAnswer = normalizeAnswer(userAnswer);
+                    const normalizedCorrectAnswer = normalizeAnswer(correctAnswers[`q${i}-p4`]);
+                    const isCorrect = normalizedUserAnswer === normalizedCorrectAnswer;
+                    console.log(`Q${i+9}: User="${userAnswer}" (normalized: "${normalizedUserAnswer}") | Correct="${correctAnswers[`q${i}-p4`]}" (normalized: "${normalizedCorrectAnswer}") | Match=${isCorrect}`);
                     
                     if (isCorrect) {
                         correctCount++;
@@ -1344,8 +1353,12 @@
                         userAnswerElement.textContent = userAnswer;
                         console.log(`q${i}-p4 - User: "${userAnswer}", Correct: "${correctAnswer}"`);
                         
+                        // Normalize both answers for comparison (remove trailing periods and trim)
+                        const normalizedUserAnswer = normalizeAnswer(userAnswer);
+                        const normalizedCorrectAnswer = normalizeAnswer(correctAnswer);
+                        
                         // Add visual indicator to user answer
-                        if (userAnswer.trim() === correctAnswer) {
+                        if (normalizedUserAnswer === normalizedCorrectAnswer) {
                             userAnswerElement.style.backgroundColor = '#d4edda';
                             userAnswerElement.style.color = '#155724';
                             userAnswerElement.style.borderColor = '#c3e6cb';
